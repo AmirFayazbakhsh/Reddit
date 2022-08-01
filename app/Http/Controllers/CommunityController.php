@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\Community\StoreCommunityRequest;
+use App\Http\Requests\UpdateCommunityRequest;
+use com_exception;
 
 class CommunityController extends Controller
 {
@@ -18,7 +20,8 @@ class CommunityController extends Controller
      */
     public function index()
     {
-        //
+        $communities = Cache::get('communities',function(){  return Community::where('user_id',auth()->user()->id)->get();    });
+        return view('communities.index',compact('communities'));
     }
 
     /**
@@ -40,8 +43,10 @@ class CommunityController extends Controller
      */
     public function store(StoreCommunityRequest $request)
     {
+
         $community = Community::create($request->validated() + ['user_id' => auth()->user()->id]);
-        return redirect()->route('communities.show',[$community->id]);
+        $community->topics()->attach($request->topics);
+        return redirect()->route('communities.index')->with('message','Community Created Successfully');
     }
 
     /**
@@ -50,9 +55,9 @@ class CommunityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Community $community)
     {
-        return "testing";
+        return $community->name;
     }
 
     /**
@@ -61,9 +66,14 @@ class CommunityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Community $community)
     {
-        //
+        if($community->user_id  !==  auth()->user()->id){
+            return abort(403);
+        }
+        $topics = Topic::all();
+        $community->load('topics');
+        return view('communities.edit',compact('community','topics'));
     }
 
     /**
@@ -73,9 +83,15 @@ class CommunityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateCommunityRequest $request, Community $community)
     {
-        //
+        if($community->user_id  !==  auth()->user()->id){
+            return abort(403);
+        }
+        $community->update($request->validated());
+        $community->topics()->sync($request->topics);
+        return redirect()->route('communities.index')->with('message','Community Updated Successfully');
+
     }
 
     /**
@@ -84,8 +100,13 @@ class CommunityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Community $community)
     {
-        //
+        if($community->user_id  !==  auth()->user()->id){
+            return abort(403);
+        }
+
+        $community->delete();
+        return redirect()->route('communities.index')->with('message','Community Deleted Successfully');
     }
 }
