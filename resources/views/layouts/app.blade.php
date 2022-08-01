@@ -12,8 +12,9 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-
     <!-- Scripts -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body>
@@ -64,6 +65,12 @@
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
                                     </form>
+
+                                        {{-- //community --}}
+
+                                        <a class="dropdown-item" href="{{ route('communities.index') }}">
+                                        {{ __('My Communities') }}
+                                        </a>
                                 </div>
                             </li>
                         @endguest
@@ -76,5 +83,13 @@
             @yield('content')
         </main>
     </div>
+    <script>
+    // In your Javascript (external .js resource or <script> tag)
+        $(document).ready(function() {
+            $('.select2').select2();
+        });
+    </script>
 </body>
+
+
 </html>
