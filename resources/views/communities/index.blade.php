@@ -12,7 +12,6 @@
                         <div class="alert alert-info" role="alert">
                             {{ session('message') }}
                         </div>
-
                     @endif
 
                     <div>
@@ -23,6 +22,7 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>Description</th>
                                 <th>Operation</th>
                             </tr>
                         </thead>
@@ -30,7 +30,13 @@
                             @foreach($communities as $community)
                                 <tr>
                                     <td>
-                                        <a  href="{{route('communities.show',$community)}}">{{$community->name}}</a></td>
+                                        <a  href="{{route('communities.show',$community)}}">{{$community->name}}</a>
+                                    </td>
+
+                                    <td>
+                                        {{$community->description}}
+                                    </td>
+
                                     <td>
                                         <a  href="{{route('communities.edit',$community)}}" class="btn btn-sm btn-primary">Edit</a>
 

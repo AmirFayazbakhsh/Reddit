@@ -39,7 +39,8 @@ class TopicObserver
      */
     public function deleted(Topic $topic)
     {
-        //
+        Cache::forget('topics');
+        Cache::forever('topics',Topic::all());
     }
 
     /**

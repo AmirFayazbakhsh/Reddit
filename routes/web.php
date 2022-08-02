@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\CommunityPostController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,7 @@ Route::middleware(['auth','verified'])->group(function(){
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::resource('communities', CommunityController::class);
+    Route::resource('communities.posts', CommunityPostController::class);
 
 });
 
