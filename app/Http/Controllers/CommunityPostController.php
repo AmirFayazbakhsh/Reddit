@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Community;
-
+use App\Models\Post;
+use App\Http\Requests\Post\StoreCommunityPostRequest;
 class CommunityPostController extends Controller
 {
     /**
@@ -14,7 +15,6 @@ class CommunityPostController extends Controller
      */
     public function index(Community $community)
     {
-        $posts = $community->posts()->latest('id')->paginate(10);
     }
 
     /**
@@ -33,9 +33,16 @@ class CommunityPostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCommunityPostRequest $request,Community $community)
     {
-        //
+        $community->posts()->create([
+            'user_id'=>auth()->id(),
+            'title'=> $request->title,
+            'post_text'=>  $request->post_text ?? null,
+            'post_url'=>  $request->post_url ?? null,
+        ]);
+
+        return redirect()->route('communities.show',$community)->with('message','Post created successfully');
     }
 
     /**

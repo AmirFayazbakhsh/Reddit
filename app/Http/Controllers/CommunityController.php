@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\Community\StoreCommunityRequest;
 use App\Http\Requests\UpdateCommunityRequest;
 use com_exception;
-
+use Illuminate\Support\Str;
 class CommunityController extends Controller
 {
     /**
@@ -44,7 +44,10 @@ class CommunityController extends Controller
     public function store(StoreCommunityRequest $request)
     {
 
-        $community = Community::create($request->validated() + ['user_id' => auth()->user()->id]);
+        $community = Community::create($request->validated() + [
+            'user_id' => auth()->user()->id,
+            // 'slug'  =>  Str::slug($request->name)  // we dont need this beacuse we use package eloquent slug /
+        ]);
         $community->topics()->attach($request->topics);
         return redirect()->route('communities.index')->with('message','Community Created Successfully');
     }
@@ -57,7 +60,8 @@ class CommunityController extends Controller
      */
     public function show(Community $community)
     {
-        return view('communities.show',compact('community'));
+        $posts = $community->posts()->latest('id')->paginate(8);
+        return view('communities.show',compact('community','posts'));
     }
 
     /**
