@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Post;
 
 class Post extends Model
 {
@@ -19,10 +20,4 @@ class Post extends Model
         'post_image',
     ];
 
-
-
-    public function posts(){
-
-        return $this->hasMany(Post::class);
-    }
 }
